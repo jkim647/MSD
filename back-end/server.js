@@ -8,7 +8,7 @@ app.use(express.json())
 
 const db = "mongodb://localhost:27017/myfullstackapp"
 
- mongoose.connect(db, {useNewUrlParser:true})
+ mongoose.connect(PROCESS.env.MONGODB_URL || db, {useNewUrlParser:true})
    .then(console.log("Connected to MongoDB"))
    .catch(err => console.log(err))
 
@@ -32,9 +32,12 @@ const db = "mongodb://localhost:27017/myfullstackapp"
     newTodo.save().then(todo => todo.json(res))
   })
 
+  if(process.env.NODE_ENV === 'production'){
+    app.use(express.static('client/build'));
+  }
 
 
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 app.listen(PORT, ()=>{
     console.log("server is running at port 5000")
